@@ -1,15 +1,19 @@
-// ====== SUMBER JSON ======
+// ===============================
+// KONFIGURASI
+// ===============================
 const jsonFiles = [
   'data/katalog1.json',
   'data/katalog2.json',
   'data/katalog3.json'
 ];
 
+const batchSize = 1; // tampil 6 dulu
 let allProducts = [];
 let visibleCount = 0;
-const batchSize = 1;
 
-// ====== LOAD SEMUA JSON ======
+// ===============================
+// LOAD JSON
+// ===============================
 async function loadJSONFiles() {
   for (const file of jsonFiles) {
     try {
@@ -20,18 +24,20 @@ async function loadJSONFiles() {
       console.error('Gagal load:', file, err);
     }
   }
-
   renderProducts();
 }
 
-// ====== RATING BINTANG ======
+// ===============================
+// RATING BINTANG
+// ===============================
 function renderStars(rating = 4.5) {
   const full = Math.floor(rating);
-  const empty = 5 - full;
-  return '★'.repeat(full) + '☆'.repeat(empty);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
 }
 
-// ====== RENDER PRODUK ======
+// ===============================
+// RENDER PRODUK
+// ===============================
 function renderProducts() {
   const container = document.getElementById('catalog');
   const searchInput = document.getElementById('search-input');
@@ -76,27 +82,44 @@ function renderProducts() {
     `);
   });
 
-  // Tombol Load More
+  // ===============================
+  // LOGIKA TOMBOL LOAD MORE
+  // ===============================
   if (loadMoreBtn) {
-    loadMoreBtn.style.display =
-      filtered.length > visibleCount ? 'block' : 'none';
+    if (filtered.length <= batchSize) {
+      loadMoreBtn.style.display = 'none';
+    } else if (visibleCount >= filtered.length) {
+      loadMoreBtn.style.display = 'block';
+      loadMoreBtn.textContent = 'Semua produk sudah ditampilkan';
+      loadMoreBtn.disabled = true;
+    } else {
+      loadMoreBtn.style.display = 'block';
+      loadMoreBtn.textContent = 'Load More';
+      loadMoreBtn.disabled = false;
+    }
   }
 
   generateSchema(filtered);
 }
 
-// ====== LOAD MORE ======
+// ===============================
+// LOAD MORE
+// ===============================
 function loadMore() {
   renderProducts();
 }
 
-// ====== SEARCH ======
+// ===============================
+// SEARCH
+// ===============================
 function filterProducts() {
   visibleCount = 0;
   renderProducts();
 }
 
-// ====== SEO JSON-LD PRODUCT ======
+// ===============================
+// SEO JSON-LD PRODUCT
+// ===============================
 function generateSchema(products) {
   const old = document.getElementById('product-schema');
   if (old) old.remove();
@@ -129,17 +152,15 @@ function generateSchema(products) {
   document.body.appendChild(script);
 }
 
-// ====== EVENT ======
+// ===============================
+// EVENT
+// ===============================
 document.addEventListener('DOMContentLoaded', () => {
   loadJSONFiles();
 
   const loadMoreBtn = document.getElementById('loadMoreBtn');
-  if (loadMoreBtn) {
-    loadMoreBtn.addEventListener('click', loadMore);
-  }
+  if (loadMoreBtn) loadMoreBtn.addEventListener('click', loadMore);
 
   const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', filterProducts);
-  }
+  if (searchInput) searchInput.addEventListener('input', filterProducts);
 });
