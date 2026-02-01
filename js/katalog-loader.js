@@ -20,20 +20,30 @@ async function loadJSONFiles() {
   renderProducts();
 }
 
-function renderProducts() {
-  const container = document.getElementById('catalog');
-  container.innerHTML = '';
+function allProducts.forEach(p => {
+  const stars = '★'.repeat(Math.floor(p.rating || 4)) +
+                '☆'.repeat(5 - Math.floor(p.rating || 4));
 
-  allProducts.forEach(p => {
-    container.insertAdjacentHTML('beforeend', `
-      <div class="product-card">
+  container.insertAdjacentHTML('beforeend', `
+    <div class="product-card">
+      
+      <div class="product-image-wrap">
+        ${p.diskon ? `<div class="badge-discount">${p.diskon}</div>` : ''}
         <img src="${p.gambar}" alt="${p.nama}">
-        <h3>${p.nama}</h3>
-        <p>${p.deskripsi}</p>
-        <a href="${p.link}" target="_blank">Lihat Detail</a>
       </div>
-    `);
-  });
+
+      <h3>${p.nama}</h3>
+      <p>${p.deskripsi}</p>
+
+      <div class="rating">
+        ${stars} <span>${p.rating || 4.5}</span>
+      </div>
+
+      <a href="${p.link}" target="_blank">Lihat Detail</a>
+    </div>
+  `);
+});
+
 }
 
 document.addEventListener('DOMContentLoaded', loadJSONFiles);
