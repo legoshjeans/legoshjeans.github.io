@@ -7,7 +7,7 @@ const jsonFiles = [
 
 let allProducts = [];
 let visibleCount = 0;
-const batchSize = 50;
+const batchSize = 1;
 
 // ====== LOAD SEMUA JSON ======
 async function loadJSONFiles() {
