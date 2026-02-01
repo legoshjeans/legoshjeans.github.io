@@ -1,4 +1,23 @@
-User-agent: *
-Allow: /
+# robots.txt untuk Legosh Jeans di GitHub Pages
 
+# Berlaku untuk semua mesin pencari
+User-agent: *
+
+# Blokir folder yang tidak ingin diindeks
+Disallow: /private/
+Disallow: /admin/
+Disallow: /node_modules/
+
+# Izinkan akses ke folder JS dan JSON katalog
+Allow: /js/
+Allow: /data/
+
+# Izinkan akses ke halaman statis utama
+Allow: /index.html
+Allow: /about.html
+Allow: /review.html
+Allow: /privacy.html
+Allow: /catalog.html
+
+# Sitemap untuk mempercepat indexing
 Sitemap: https://legoshjeans.github.io/sitemap.xml
