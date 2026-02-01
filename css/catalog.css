@@ -107,7 +107,7 @@
    SEARCH BOX
 ========================= */
 #search-input {
-  width: calc(100% - 28px);
+  width: calc(80% - 28px);
   margin: 14px;
   padding: 10px 12px;
   font-size: 14px;
