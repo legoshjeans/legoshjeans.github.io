@@ -1,0 +1,72 @@
+/* === GRID KATALOG === */
+#catalog {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 14px;
+}
+
+/* Desktop 4 kolom */
+@media (min-width: 992px) {
+  #catalog {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* === CARD PRODUK === */
+.product-card {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* Gambar produk */
+.product-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #f5f5f5;
+}
+
+/* Info produk */
+.product-card h3 {
+  font-size: 14px;
+  margin: 10px;
+  line-height: 1.4;
+  height: 40px;
+  overflow: hidden;
+}
+
+.product-card p {
+  font-size: 12px;
+  margin: 0 10px 10px;
+  color: #666;
+  height: 36px;
+  overflow: hidden;
+}
+
+/* Tombol */
+.product-card a {
+  margin: 10px;
+  padding: 8px;
+  text-align: center;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+
+.product-card a:hover {
+  background: #333;
+}
