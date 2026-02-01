@@ -59,7 +59,10 @@
     }
   </style>
 </head>
-
+<script src="katalog.js"></script>
+<script src="about.js"></script>
+<script src="review.js"></script>
+<script src="privacy.js"></script>
 <body>
 
 <header>
@@ -76,20 +79,7 @@
   <p>Klik tombol di bawah untuk mulai.</p>
   <a href="#" class="cta">Kunjungi Sekarang</a>
 </section>
-<script>
-function loadSection(id, file) {
-  fetch(file)
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById(id).innerHTML = data;
-    });
-}
 
-loadSection("katalog", "katalog.html");
-loadSection("about", "about.html");
-loadSection("review", "review.html");
-loadSection("privacy", "privacy.html");
-</script>
 
 <footer>
   © 2026 Nama Anda - All Rights Reserved
