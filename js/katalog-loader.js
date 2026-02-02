@@ -7,7 +7,7 @@ const jsonFiles = [
   'data/katalog3.json'
 ];
 
-const batchSize = 1; // tampil 6 dulu
+const batchSize = 4; // tampil 6 dulu
 let allProducts = [];
 let visibleCount = 0;
 
