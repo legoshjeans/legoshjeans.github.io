@@ -1,5 +1,13 @@
 document.getElementById("about").innerHTML = `
 <section>
+<h3>Cara Melihat Harga Celana Legosh</h3>
+<ol><li>Buka halaman <a href="https://legoshjeans.github.io">Legosh jeans</a> di web browser.</li><li>
+Pilih produk pada halaman katalog.</li><li>
+Klik tombol <b>Lihat Detail</b></li><li>
+Anda akan dialihkan ke aplikasi shopee.</li><li>Silahkan ikuti halaman pengalihan ke aplikasi marketplace.</li><li>
+Harga celana legosh original akan terlihat.</li></ol>
+
+<p>Dihalaman tersebut, akan terlihat harga celana legosh sesuai produk yang dipilih. Terdapat pula bagian detail, bahkan produk tersebut bisa langsung dibeli secara online.</p>
 <h2>Tentang Legosh</h2>
 <p>Brand legosh memang terkenal populer dikalangan masyarakat luas. hal inilah yang mengundang saya untuk membuat halaman ini sebagai bahan rujukan bersama. Popularitas legosh sendiri juga tidak lepas dari visinya yang selalu mengutamakan produk, seperti menerapkan bahan denim/canvas grade A tebal, lembut serta tahan lama. Jelas ini alasan mendasar orang-orang memilih legosh sampai hari ini.</p>
 <p>Selain mengutamakan bahan, semua aksesoriesnya juga terkesan sangat premium. Senada dengan brandnya "Legosh", yang terbukti membawa karirnya membumbung. Tidak seperti produk celana jeans pada umumnya, legosh didesain dengan kancing anti karat serta zipper auto-lock banget. Bahkan kualitasnya sudah sangat teruji dan punya sertifikat maupun penerbitan standar SNI.</p>
@@ -19,5 +27,10 @@ Ketika seseorang bosan dengan satu warna, justru legosh memanfaatkan moment ini 
 Meski celana legosh adalah brand terbaik dalam kategori jeans casual original, legosh selalu memberi kesempatan bagi siapapun agar bisa memiliki satu atau beberapa jeans. Dengan pola penerapan harga kompetitif, menjadikan legosh sebagai satu-satunya opsi celana jeans pria yang punya harga sangat terjangkau.
 </li></ol>
 Beberapa alasan diatas merupakan sebagian kecil mengapa orang Indonesia wajib memilih celana panjang pria legosh.
+<h3>Legosh Jeans Pekalongan</h3>
+<p>Legosh adalah brand celana jeans yang berlokasi di pekalongan provinsi jawa tengah. Terletak di alamat Jl. Gatot Subroto, Banyurip Alit, Kec. Pekalongan Sel., Kota Pekalongan, Jawa Tengah 51117. Selain menjual produknya secara daring, Legosh juga dipasarkan melalui marketplace seperti shopee, lazada, tokopedia, bahkan tiktokshop. Perihal informasi tambahan, sebaiknya hubungi langsung nomor telephone 0815-4882-0004 dan mengajukan pertanyaan secara langsung.</p>
+<h3>Harga Celana Legosh</h3><p>
+Meski sedikit klasik terdengar, celana Legosh original bukan sekedar jeans biasa. Ini kombinasi antara kualitas, kenyamanan dan formal. Sehingga katalog legosh yang tercantum diatas merupakan celana legosh original. Hal-hal terkait harga celana legosh hari ini, merupakan harga sebenarnya yang bisa dilihat setelah pengguna masuk kehalaman lihat detail.
+</p>
 </section>
 `;
