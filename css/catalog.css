@@ -1,13 +1,40 @@
+/* ================= FILTER BAR SEJAJAR ================= */
+
 .filter-bar {
   display: flex;
   gap: 10px;
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
-.filter-bar select {
-  padding: 8px;
+/* SEARCH LEBIH PANJANG */
+#search-input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
   font-size: 14px;
+  outline: none;
+  background: #fff;
 }
+
+/* KATEGORI LEBIH KECIL */
+#filterKategori {
+  width: 140px;
+  padding: 12px 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Biar tidak pecah di layar kecil */
+.filter-bar input,
+.filter-bar select {
+  min-width: 0;
+}
+
 
 /* === GRID KATALOG === */
 #catalog {
