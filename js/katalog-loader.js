@@ -1,40 +1,4 @@
-// ===============================
-// KONFIGURASI
-// ===============================
-const jsonFiles = [
-  'data/katalog1.json',
-  'data/katalog2.json',
-  'data/katalog3.json'
-];
-
-const batchSize = 14;
-let allProducts = [];
-let visibleCount = 0;
-
-// ===============================
-// LOAD JSON
-// ===============================
-async function loadJSONFiles() {
-  for (const file of jsonFiles) {
-    try {
-      const res = await fetch(file);
-      const data = await res.json();
-      allProducts = allProducts.concat(data);
-    } catch (err) {
-      console.error('Gagal load:', file, err);
-    }
-  }
-  renderProducts();
-}
-
-// ===============================
-// RATING BINTANG
-// ===============================
-function renderStars(rating = 4.5) {
-  const full = Math.floor(rating);
-  return '★'.repeat(full) + '☆'.repeat(5 - full);
-}
-
+kategoriEl.value
 // ===============================
 // FILTER KATEGORI + SORT HARGA
 // ===============================
