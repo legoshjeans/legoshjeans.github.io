@@ -30,7 +30,7 @@ function applyCategoryAndSort(products) {
 // RENDER PRODUK
 // ===============================
 function renderProducts() {
-  const container = document.getElementById('catalog');
+  const container = document.getElementById('katalog');
   const searchInput = document.getElementById('search-input');
   const loadMoreBtn = document.getElementById('loadMoreBtn');
 
