@@ -7,7 +7,7 @@ const jsonFiles = [
   'data/katalog3.json'
 ];
 
-const batchSize = 14; // tampil 6 dulu
+const batchSize = 14;
 let allProducts = [];
 let visibleCount = 0;
 
@@ -36,6 +36,33 @@ function renderStars(rating = 4.5) {
 }
 
 // ===============================
+// FILTER KATEGORI + SORT HARGA
+// ===============================
+function applyCategoryAndSort(products) {
+  const kategoriEl = document.getElementById('filterKategori');
+  const sortEl = document.getElementById('sortHarga');
+
+  let hasil = [...products];
+
+  if (kategoriEl && kategoriEl.value !== 'all') {
+    hasil = hasil.filter(p =>
+      p.kategori &&
+      p.kategori.toLowerCase() === kategoriEl.value
+    );
+  }
+
+  if (sortEl) {
+    if (sortEl.value === 'termurah') {
+      hasil.sort((a, b) => (a.harga || 0) - (b.harga || 0));
+    } else if (sortEl.value === 'termahal') {
+      hasil.sort((a, b) => (b.harga || 0) - (a.harga || 0));
+    }
+  }
+
+  return hasil;
+}
+
+// ===============================
 // RENDER PRODUK
 // ===============================
 function renderProducts() {
@@ -49,11 +76,14 @@ function renderProducts() {
 
   const keyword = searchInput ? searchInput.value.toLowerCase() : '';
 
-  const filtered = allProducts.filter(p =>
+  let filtered = allProducts.filter(p =>
     p.nama.toLowerCase().includes(keyword) ||
     (p.deskripsi && p.deskripsi.toLowerCase().includes(keyword)) ||
     (p.kategori && p.kategori.toLowerCase().includes(keyword))
   );
+
+  // 🔥 TERAPKAN FILTER KATEGORI & SORT
+  filtered = applyCategoryAndSort(filtered);
 
   const showProducts = filtered.slice(0, visibleCount + batchSize);
   visibleCount += batchSize;
@@ -63,13 +93,13 @@ function renderProducts() {
 
     container.insertAdjacentHTML('beforeend', `
       <div class="product-card">
-
         <div class="product-image-wrap">
           ${p.diskon ? `<div class="badge-discount">${p.diskon}</div>` : ''}
           <img src="${p.gambar}" alt="${p.nama}" loading="lazy">
         </div>
 
         <h3>${p.nama}</h3>
+        <p>Rp ${(p.harga || 0).toLocaleString()}</p>
         <p>${p.deskripsi || ''}</p>
 
         <div class="rating">
@@ -83,7 +113,7 @@ function renderProducts() {
   });
 
   // ===============================
-  // LOGIKA TOMBOL LOAD MORE
+  // LOGIKA LOAD MORE
   // ===============================
   if (loadMoreBtn) {
     if (filtered.length <= batchSize) {
@@ -163,4 +193,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const searchInput = document.getElementById('search-input');
   if (searchInput) searchInput.addEventListener('input', filterProducts);
+
+  const kategoriEl = document.getElementById('filterKategori');
+  if (kategoriEl) {
+    kategoriEl.addEventListener('change', () => {
+      visibleCount = 0;
+      renderProducts();
+    });
+  }
+
+  const sortEl = document.getElementById('sortHarga');
+  if (sortEl) {
+    sortEl.addEventListener('change', () => {
+      visibleCount = 0;
+      renderProducts();
+    });
+  }
 });
