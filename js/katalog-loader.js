@@ -1,26 +1,51 @@
-kategoriEl.value
 // ===============================
-// FILTER KATEGORI + SORT HARGA
+// KONFIGURASI
 // ===============================
-function applyCategoryAndSort(products) {
-  const kategoriEl = document.getElementById('filterKategori');
-  const sortEl = document.getElementById('sortHarga');
+const jsonFiles = [
+  'data/katalog1.json',
+  'data/katalog2.json',
+  'data/katalog3.json'
+];
 
+const batchSize = 14;
+let allProducts = [];
+let visibleCount = 0;
+
+// ===============================
+// LOAD JSON
+// ===============================
+async function loadJSONFiles() {
+  for (const file of jsonFiles) {
+    try {
+      const res = await fetch(file);
+      const data = await res.json();
+      allProducts = allProducts.concat(data);
+    } catch (err) {
+      console.error('Gagal load:', file, err);
+    }
+  }
+  renderProducts();
+}
+
+// ===============================
+// RATING
+// ===============================
+function renderStars(rating = 4.5) {
+  const full = Math.floor(rating);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
+
+// ===============================
+// FILTER KATEGORI (AMAN)
+// ===============================
+function applyCategoryFilter(products) {
+  const kategoriEl = document.getElementById('filterKategori');
   let hasil = [...products];
 
   if (kategoriEl && kategoriEl.value !== 'all') {
     hasil = hasil.filter(p =>
-      p.kategori &&
-      p.kategori.toLowerCase() === kategoriEl.value
+      (p.kategori || '').toLowerCase() === kategoriEl.value
     );
-  }
-
-  if (sortEl) {
-    if (sortEl.value === 'termurah') {
-      hasil.sort((a, b) => (a.harga || 0) - (b.harga || 0));
-    } else if (sortEl.value === 'termahal') {
-      hasil.sort((a, b) => (b.harga || 0) - (a.harga || 0));
-    }
   }
 
   return hasil;
@@ -40,14 +65,21 @@ function renderProducts() {
 
   const keyword = searchInput ? searchInput.value.toLowerCase() : '';
 
-  let filtered = allProducts.filter(p =>
-    p.nama.toLowerCase().includes(keyword) ||
-    (p.deskripsi && p.deskripsi.toLowerCase().includes(keyword)) ||
-    (p.kategori && p.kategori.toLowerCase().includes(keyword))
-  );
+  // FILTER SEARCH AMAN (tidak bikin JS mati)
+  let filtered = allProducts.filter(p => {
+    const nama = (p.nama || '').toLowerCase();
+    const desk = (p.deskripsi || '').toLowerCase();
+    const kat  = (p.kategori || '').toLowerCase();
 
-  // 🔥 TERAPKAN FILTER KATEGORI & SORT
-  filtered = applyCategoryAndSort(filtered);
+    return (
+      nama.includes(keyword) ||
+      desk.includes(keyword) ||
+      kat.includes(keyword)
+    );
+  });
+
+  // FILTER KATEGORI
+  filtered = applyCategoryFilter(filtered);
 
   const showProducts = filtered.slice(0, visibleCount + batchSize);
   visibleCount += batchSize;
@@ -56,29 +88,44 @@ function renderProducts() {
     const rating = p.rating || (Math.random() * (5 - 4) + 4).toFixed(1);
 
     container.insertAdjacentHTML('beforeend', `
-      <div class="product-card">
+      <article class="product-card"
+        itemscope itemtype="https://schema.org/Product">
+
         <div class="product-image-wrap">
           ${p.diskon ? `<div class="badge-discount">${p.diskon}</div>` : ''}
-          <img src="${p.gambar}" alt="${p.nama}" loading="lazy">
+          <img src="${p.gambar || 'img/noimage.jpg'}"
+               alt="${p.nama || 'Produk Legosh'}"
+               loading="lazy"
+               itemprop="image">
         </div>
 
-        <h3>${p.nama}</h3>
-        <p>Rp ${(p.harga || 0).toLocaleString()}</p>
-        <p>${p.deskripsi || ''}</p>
+        <h3 itemprop="name">${p.nama || 'Produk Legosh'}</h3>
 
-        <div class="rating">
+        <p itemprop="description">${p.deskripsi || ''}</p>
+
+        <div class="rating"
+          itemprop="aggregateRating"
+          itemscope itemtype="https://schema.org/AggregateRating">
           ${renderStars(rating)}
-          <span>${rating}</span>
+          <span itemprop="ratingValue">${rating}</span>
+          <meta itemprop="reviewCount" content="120">
         </div>
 
-        <a href="${p.link}" target="_blank" rel="noopener">Lihat Detail</a>
-      </div>
+        <div itemprop="offers"
+             itemscope itemtype="https://schema.org/Offer">
+          <meta itemprop="priceCurrency" content="IDR" />
+          <meta itemprop="price" content="${p.harga || 0}" />
+          <meta itemprop="availability"
+                content="https://schema.org/InStock" />
+          <a href="${p.link}" target="_blank" rel="noopener"
+             itemprop="url">Lihat Detail</a>
+        </div>
+
+      </article>
     `);
   });
 
-  // ===============================
-  // LOGIKA LOAD MORE
-  // ===============================
+  // LOAD MORE BUTTON
   if (loadMoreBtn) {
     if (filtered.length <= batchSize) {
       loadMoreBtn.style.display = 'none';
@@ -112,7 +159,7 @@ function filterProducts() {
 }
 
 // ===============================
-// SEO JSON-LD PRODUCT
+// JSON-LD SCHEMA (RICH SNIPPET)
 // ===============================
 function generateSchema(products) {
   const old = document.getElementById('product-schema');
@@ -121,21 +168,21 @@ function generateSchema(products) {
   const schemaData = products.map(p => ({
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": p.nama,
-    "image": p.gambar,
-    "description": p.deskripsi,
-    "brand": p.toko || "Store",
-    "category": p.kategori,
+    "name": p.nama || 'Produk Legosh',
+    "image": p.gambar || '',
+    "description": p.deskripsi || '',
+    "category": p.kategori || '',
     "offers": {
       "@type": "Offer",
       "priceCurrency": "IDR",
-      "price": p.harga || "0",
-      "availability": "https://schema.org/InStock"
+      "price": p.harga || 0,
+      "availability": "https://schema.org/InStock",
+      "url": p.link || ''
     },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": p.rating || 4.5,
-      "reviewCount": Math.floor(Math.random() * 900 + 100)
+      "reviewCount": 120
     }
   }));
 
@@ -161,14 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const kategoriEl = document.getElementById('filterKategori');
   if (kategoriEl) {
     kategoriEl.addEventListener('change', () => {
-      visibleCount = 0;
-      renderProducts();
-    });
-  }
-
-  const sortEl = document.getElementById('sortHarga');
-  if (sortEl) {
-    sortEl.addEventListener('change', () => {
       visibleCount = 0;
       renderProducts();
     });
