@@ -106,6 +106,24 @@
   <p>Cari legosh original dari official store terpercaya? Lihatlah katalog yang kami tawarkan kepada anda berikut ini</p>
   <input type="text" id="search-input" placeholder="Cari produk...">
 </header>
+  <div class="filter-bar">
+  <select id="filterKategori">
+    <option value="all">Semua Produk</option>
+    <option value="celana-pendek">Celana Pendek</option>
+    <option value="celana-panjang">Celana Panjang</option>
+    <option value="kemeja">Kemeja</option>
+    <option value="jaket">Jaket</option>
+  </select>
+
+  <select id="sortHarga">
+    <option value="default">Urutkan Harga</option>
+    <option value="termurah">Harga Termurah</option>
+    <option value="termahal">Harga Termahal</option>
+  </select>
+</div>
+
+<div id="katalog"></div>
+
 <div id="catalog"></div>
 <button id="loadMoreBtn">Load More</button>
 <script src="js/katalog-loader.js"></script>
