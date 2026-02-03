@@ -9,7 +9,7 @@ const jsonFiles = [
 
 const batchSize = 14;
 let allProducts = [];
-let visibleCount = 0;
+let visibleCount = batchSize;
 
 // ===============================
 // LOAD JSON
@@ -28,7 +28,7 @@ async function loadJSONFiles() {
 }
 
 // ===============================
-// RATING
+// RATING BINTANG
 // ===============================
 function renderStars(rating = 4.5) {
   const full = Math.floor(rating);
@@ -36,27 +36,12 @@ function renderStars(rating = 4.5) {
 }
 
 // ===============================
-// FILTER KATEGORI (AMAN)
-// ===============================
-function applyCategoryFilter(products) {
-  const kategoriEl = document.getElementById('filterKategori');
-  let hasil = [...products];
-
-  if (kategoriEl && kategoriEl.value !== 'all') {
-    hasil = hasil.filter(p =>
-      (p.kategori || '').toLowerCase() === kategoriEl.value
-    );
-  }
-
-  return hasil;
-}
-
-// ===============================
 // RENDER PRODUK
 // ===============================
 function renderProducts() {
-  const container = document.getElementById('katalog');
+  const container = document.getElementById('catalog');
   const searchInput = document.getElementById('search-input');
+  const kategoriEl = document.getElementById('filterKategori');
   const loadMoreBtn = document.getElementById('loadMoreBtn');
 
   if (!container) return;
@@ -64,72 +49,49 @@ function renderProducts() {
   container.innerHTML = '';
 
   const keyword = searchInput ? searchInput.value.toLowerCase() : '';
+  const kategori = kategoriEl ? kategoriEl.value.toLowerCase() : 'all';
 
-  // FILTER SEARCH AMAN (tidak bikin JS mati)
-  let filtered = allProducts.filter(p => {
-    const nama = (p.nama || '').toLowerCase();
-    const desk = (p.deskripsi || '').toLowerCase();
-    const kat  = (p.kategori || '').toLowerCase();
+  // FILTER
+  const filtered = allProducts.filter(p => {
+    const cocokKeyword =
+      p.nama.toLowerCase().includes(keyword) ||
+      (p.deskripsi && p.deskripsi.toLowerCase().includes(keyword));
 
-    return (
-      nama.includes(keyword) ||
-      desk.includes(keyword) ||
-      kat.includes(keyword)
-    );
+    const cocokKategori =
+      kategori === 'all' ||
+      (p.kategori && p.kategori.toLowerCase() === kategori);
+
+    return cocokKeyword && cocokKategori;
   });
 
-  // FILTER KATEGORI
-  filtered = applyCategoryFilter(filtered);
-
-  const showProducts = filtered.slice(0, visibleCount + batchSize);
-  visibleCount += batchSize;
+  const showProducts = filtered.slice(0, visibleCount);
 
   showProducts.forEach(p => {
     const rating = p.rating || (Math.random() * (5 - 4) + 4).toFixed(1);
 
     container.insertAdjacentHTML('beforeend', `
-      <article class="product-card"
-        itemscope itemtype="https://schema.org/Product">
-
+      <div class="product-card">
         <div class="product-image-wrap">
           ${p.diskon ? `<div class="badge-discount">${p.diskon}</div>` : ''}
-          <img src="${p.gambar || 'img/noimage.jpg'}"
-               alt="${p.nama || 'Produk Legosh'}"
-               loading="lazy"
-               itemprop="image">
+          <img src="${p.gambar}" alt="${p.nama}" loading="lazy">
         </div>
 
-        <h3 itemprop="name">${p.nama || 'Produk Legosh'}</h3>
+        <h3>${p.nama}</h3>
+        <p>${p.deskripsi || ''}</p>
 
-        <p itemprop="description">${p.deskripsi || ''}</p>
-
-        <div class="rating"
-          itemprop="aggregateRating"
-          itemscope itemtype="https://schema.org/AggregateRating">
+        <div class="rating">
           ${renderStars(rating)}
-          <span itemprop="ratingValue">${rating}</span>
-          <meta itemprop="reviewCount" content="120">
+          <span>${rating}</span>
         </div>
 
-        <div itemprop="offers"
-             itemscope itemtype="https://schema.org/Offer">
-          <meta itemprop="priceCurrency" content="IDR" />
-          <meta itemprop="price" content="${p.harga || 0}" />
-          <meta itemprop="availability"
-                content="https://schema.org/InStock" />
-          <a href="${p.link}" target="_blank" rel="noopener"
-             itemprop="url">Lihat Detail</a>
-        </div>
-
-      </article>
+        <a href="${p.link}" target="_blank" rel="noopener">Lihat Detail</a>
+      </div>
     `);
   });
 
   // LOAD MORE BUTTON
   if (loadMoreBtn) {
-    if (filtered.length <= batchSize) {
-      loadMoreBtn.style.display = 'none';
-    } else if (visibleCount >= filtered.length) {
+    if (visibleCount >= filtered.length) {
       loadMoreBtn.style.display = 'block';
       loadMoreBtn.textContent = 'Semua produk sudah ditampilkan';
       loadMoreBtn.disabled = true;
@@ -147,19 +109,20 @@ function renderProducts() {
 // LOAD MORE
 // ===============================
 function loadMore() {
+  visibleCount += batchSize;
   renderProducts();
 }
 
 // ===============================
-// SEARCH
+// SEARCH & FILTER
 // ===============================
 function filterProducts() {
-  visibleCount = 0;
+  visibleCount = batchSize;
   renderProducts();
 }
 
 // ===============================
-// JSON-LD SCHEMA (RICH SNIPPET)
+// SEO JSON-LD PRODUCT
 // ===============================
 function generateSchema(products) {
   const old = document.getElementById('product-schema');
@@ -168,21 +131,25 @@ function generateSchema(products) {
   const schemaData = products.map(p => ({
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": p.nama || 'Produk Legosh',
-    "image": p.gambar || '',
-    "description": p.deskripsi || '',
-    "category": p.kategori || '',
+    "name": p.nama,
+    "image": p.gambar,
+    "description": p.deskripsi,
+    "brand": {
+      "@type": "Brand",
+      "name": "Legosh"
+    },
+    "category": p.kategori,
     "offers": {
       "@type": "Offer",
       "priceCurrency": "IDR",
-      "price": p.harga || 0,
+      "price": p.harga || "0",
       "availability": "https://schema.org/InStock",
-      "url": p.link || ''
+      "url": p.link
     },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": p.rating || 4.5,
-      "reviewCount": 120
+      "reviewCount": Math.floor(Math.random() * 900 + 100)
     }
   }));
 
@@ -206,10 +173,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchInput) searchInput.addEventListener('input', filterProducts);
 
   const kategoriEl = document.getElementById('filterKategori');
-  if (kategoriEl) {
-    kategoriEl.addEventListener('change', () => {
-      visibleCount = 0;
-      renderProducts();
-    });
-  }
+  if (kategoriEl) kategoriEl.addEventListener('change', filterProducts);
 });
