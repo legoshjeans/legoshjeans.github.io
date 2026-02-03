@@ -1,3 +1,14 @@
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.filter-bar select {
+  padding: 8px;
+  font-size: 14px;
+}
+
 /* === GRID KATALOG === */
 #catalog {
   display: grid;
