@@ -1,4 +1,7 @@
-document.getElementById("about").innerHTML = `
+document.addEventListener("DOMContentLoaded", function () {
+  const about = document.getElementById("about");
+  if (about) {
+    about.innerHTML = `
 <section>
 <h3>Cara Melihat Harga Celana Legosh</h3>
 <ol><li>Buka halaman <a href="https://legoshjeans.github.io">Legosh jeans</a> di web browser.</li><li>
@@ -34,3 +37,5 @@ Meski sedikit klasik terdengar, celana Legosh original bukan sekedar jeans biasa
 </p>
 </section>
 `;
+  }
+});
