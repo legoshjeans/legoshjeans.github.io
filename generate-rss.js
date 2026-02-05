@@ -1,42 +1,53 @@
 const fs = require('fs');
 const path = require('path');
 
-const folder = './produk'; // folder HTML produk
-const baseURL = 'https://example.com/'; // ganti dengan domain kamu
+// ===== CONFIG =====
+const katalogFolder = './js'; // folder tempat katalog JSON
+const baseURL = 'https://legoshjeans.github.io/'; // domain kamu
+const rssFile = 'rss.xml'; // output
+const siteTitle = 'Legosh Jeans';
+const siteDescription = 'Daftar produk terbaru Legosh Jeans';
+// ==================
 
-let items = '';
+// Ambil semua file JSON katalog
+const katalogFiles = fs.readdirSync(katalogFolder).filter(f => f.endsWith('.json'));
 
-// Loop semua file HTML di folder produk
-fs.readdirSync(folder).forEach(file => {
-  if (file.endsWith('.html')) {
-    const title = path.basename(file, '.html'); // ambil nama file tanpa .html
-    const link = baseURL + file;
+let items = [];
+
+katalogFiles.forEach(file => {
+  const filePath = path.join(katalogFolder, file);
+  const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+  data.forEach(prod => {
+    const title = prod.title || prod.slug;
+    const description = prod.description || `Deskripsi singkat ${title}`;
+    const link = baseURL + prod.slug + '.html';
     const pubDate = new Date().toUTCString();
 
-    items += `
+    items.push(`
     <item>
       <title>${title}</title>
       <link>${link}</link>
-      <description>Deskripsi singkat ${title}</description>
+      <description>${description}</description>
       <pubDate>${pubDate}</pubDate>
       <guid>${link}</guid>
-    </item>`;
-  }
+    </item>`);
+  });
 });
 
 // Buat RSS XML
-const rss = `<?xml version="1.0" encoding="UTF-8" ?>
+const rssContent = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title>Toko Saya</title>
+    <title>${siteTitle}</title>
     <link>${baseURL}</link>
-    <description>Daftar produk terbaru</description>
+    <description>${siteDescription}</description>
     <language>id-ID</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    ${items}
+    ${items.join('')}
   </channel>
 </rss>`;
 
-// Simpan sebagai rss.xml
-fs.writeFileSync('rss.xml', rss.trim());
-console.log('RSS feed berhasil dibuat! ✅');
+// Simpan rss.xml
+fs.writeFileSync(rssFile, rssContent.trim());
+console.log(`✅ RSS feed berhasil dibuat: ${rssFile}`);
