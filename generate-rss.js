@@ -11,14 +11,15 @@ const siteDescription = 'Daftar produk terbaru Legosh Jeans';
 
 // Fungsi buat slug otomatis dari title
 function slugify(text) {
+  if (!text) return 'produk-tanpa-nama'; // fallback jika title kosong
   return text
     .toString()
-    .normalize('NFD')                  // hilangkan aksen
-    .replace(/[\u0300-\u036f]/g, '')  // hilangkan karakter khusus
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9 ]/g, '')       // hanya huruf, angka, spasi
-    .replace(/\s+/g, '-');            // ganti spasi jadi -
+    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/\s+/g, '-');
 }
 
 // Ambil semua file JSON
@@ -29,12 +30,19 @@ katalogFiles.forEach(file => {
   const data = JSON.parse(fs.readFileSync(path.join(katalogFolder, file), 'utf-8'));
 
   data.forEach(prod => {
-    if (!prod.title) return; // skip jika tidak ada title
+    // Pastikan title ada, kalau tidak skip
+    const title = prod.title ? prod.title.trim() : null;
+    if (!title) return; 
 
-    const title = prod.title.trim();
+    // Description fallback
     const description = prod.description ? prod.description.trim() : `Deskripsi singkat ${title}`;
+
+    // Slug aman
     const slug = slugify(title);
-    const link = baseURL + slug; // URL sesuai loader JS
+
+    // URL sesuai loader JS
+    const link = baseURL + slug;
+
     const pubDate = new Date().toUTCString();
 
     items.push(`
