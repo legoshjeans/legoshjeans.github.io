@@ -1,3 +1,11 @@
+// FUNGSI ACAK URUTAN (Fisher-Yates Shuffle)
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 // ===============================
 // KONFIGURASI
 // ===============================
@@ -6,7 +14,7 @@ const jsonFiles = [
   'data/katalog2.json',
   'data/katalog3.json'
 ];
-
+  semuaProduk = shuffleArray(semuaProduk);
 const batchSize = 14;
 let allProducts = [];
 let visibleCount = batchSize;
