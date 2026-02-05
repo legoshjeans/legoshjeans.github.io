@@ -1,19 +1,4 @@
 // ===============================
-// GENERATE ID OTOMATIS (UNIK & KONSISTEN)
-// ===============================
-function generateId(p) {
-  const str = (p.nama + p.gambar + p.link).toLowerCase();
-
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-
-  return 'p' + Math.abs(hash);
-}
-
-// ===============================
 // KONFIGURASI
 // ===============================
 const BASE_PATH = window.location.origin;
@@ -54,10 +39,7 @@ async function loadJSONFiles() {
 
   // ACAK SEKALI SETELAH SEMUA PRODUK TERKUMPUL
   shuffleArray(allProducts);
-// Pasang ID otomatis ke setiap produk
-allProducts.forEach(p => {
-  p.autoId = generateId(p);
-});
+
   renderProducts();
 }
 
@@ -117,13 +99,8 @@ function renderProducts() {
           ${renderStars(rating)}
           <span>${rating}</span>
         </div>
-<a 
-  href="/produk.html?id=${p.autoId}" 
-  class="detail-link" 
-  data-link="${p.link}"
->
-  Lihat Detail
-</a>
+
+        <a href="${p.link}" target="_blank" rel="noopener">Lihat Detail</a>
       </div>
     `);
   });
@@ -214,19 +191,3 @@ document.addEventListener('DOMContentLoaded', () => {
   const kategoriEl = document.getElementById('filterKategori');
   if (kategoriEl) kategoriEl.addEventListener('change', filterProducts);
 });
-// ===============================
-// REDIRECT SAAT KLIK DETAIL
-// ===============================
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('.detail-link');
-  if (!link) return;
-
-  e.preventDefault(); // hentikan buka URL id
-  const tujuan = link.getAttribute('data-link');
-  window.location.href = tujuan; // lompat ke Shopee
-});
-
-
-
-
-
