@@ -2,26 +2,39 @@ const fs = require('fs');
 const path = require('path');
 
 // ===== CONFIG =====
-const katalogFolder = './js'; // folder tempat katalog JSON
-const baseURL = 'https://legoshjeans.github.io/'; // domain kamu
-const rssFile = 'rss.xml'; // output
+const katalogFolder = './js'; // folder JSON katalog
+const baseURL = 'https://legoshjeans.github.io/'; // domain
+const rssFile = 'rss.xml'; // file output
 const siteTitle = 'Legosh Jeans';
 const siteDescription = 'Daftar produk terbaru Legosh Jeans';
 // ==================
 
-// Ambil semua file JSON katalog
-const katalogFiles = fs.readdirSync(katalogFolder).filter(f => f.endsWith('.json'));
+// Fungsi buat slug otomatis dari title
+function slugify(text) {
+  return text
+    .toString()
+    .normalize('NFD')                  // hilangkan aksen
+    .replace(/[\u0300-\u036f]/g, '')  // hilangkan karakter khusus
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9 ]/g, '')       // hanya huruf, angka dan spasi
+    .replace(/\s+/g, '-');            // ganti spasi jadi -
+}
 
+// Ambil semua file JSON
+const katalogFiles = fs.readdirSync(katalogFolder).filter(f => f.endsWith('.json'));
 let items = [];
 
 katalogFiles.forEach(file => {
-  const filePath = path.join(katalogFolder, file);
-  const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  const data = JSON.parse(fs.readFileSync(path.join(katalogFolder, file), 'utf-8'));
 
   data.forEach(prod => {
-    const title = prod.title || prod.slug;
-    const description = prod.description || `Deskripsi singkat ${title}`;
-    const link = baseURL + prod.slug + '.html';
+    if (!prod.title) return; // skip jika tidak ada title
+
+    const title = prod.title.trim();
+    const description = prod.description ? prod.description.trim() : `Deskripsi singkat ${title}`;
+    const slug = slugify(title);
+    const link = baseURL + slug + '.html';
     const pubDate = new Date().toUTCString();
 
     items.push(`
