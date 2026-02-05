@@ -3,8 +3,8 @@ const path = require('path');
 
 // ===== CONFIG =====
 const katalogFolder = './js'; // folder JSON katalog
-const baseURL = 'https://legoshjeans.github.io/'; // domain
-const rssFile = 'rss.xml'; // file output
+const baseURL = 'https://legoshjeans.github.io/produk.html?slug='; // URL loader JS
+const rssFile = 'rss.xml'; // output
 const siteTitle = 'Legosh Jeans';
 const siteDescription = 'Daftar produk terbaru Legosh Jeans';
 // ==================
@@ -17,7 +17,7 @@ function slugify(text) {
     .replace(/[\u0300-\u036f]/g, '')  // hilangkan karakter khusus
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9 ]/g, '')       // hanya huruf, angka dan spasi
+    .replace(/[^a-z0-9 ]/g, '')       // hanya huruf, angka, spasi
     .replace(/\s+/g, '-');            // ganti spasi jadi -
 }
 
@@ -34,7 +34,7 @@ katalogFiles.forEach(file => {
     const title = prod.title.trim();
     const description = prod.description ? prod.description.trim() : `Deskripsi singkat ${title}`;
     const slug = slugify(title);
-    const link = baseURL + slug + '.html';
+    const link = baseURL + slug; // URL sesuai loader JS
     const pubDate = new Date().toUTCString();
 
     items.push(`
@@ -53,7 +53,7 @@ const rssContent = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
     <title>${siteTitle}</title>
-    <link>${baseURL}</link>
+    <link>https://legoshjeans.github.io/produk.html</link>
     <description>${siteDescription}</description>
     <language>id-ID</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
