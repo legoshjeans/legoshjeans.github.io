@@ -100,7 +100,11 @@ function renderProducts() {
           <span>${rating}</span>
         </div>
 
-        <a href="${p.link}" target="_blank" rel="noopener">Lihat Detail</a>
+        const slug = generateSlug(p.nama); // buat fungsi generateSlug kalau belum ada
+<a href="produk.html?slug=${slug}" class="detail-link">
+  Lihat Detail → /produk/${slug}
+</a>
+
       </div>
     `);
   });
