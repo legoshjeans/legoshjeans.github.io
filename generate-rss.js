@@ -1,36 +1,42 @@
 const fs = require('fs');
+const path = require('path');
 
-const files = [
-  'data/katalog1.json',
-  'data/katalog2.json',
-  'data/katalog3.json'
-];
+const folder = './produk'; // folder HTML produk
+const baseURL = 'https://example.com/'; // ganti dengan domain kamu
 
 let items = '';
 
-files.forEach(file => {
-  const data = JSON.parse(fs.readFileSync(file));
-  data.forEach(p => {
+// Loop semua file HTML di folder produk
+fs.readdirSync(folder).forEach(file => {
+  if (file.endsWith('.html')) {
+    const title = path.basename(file, '.html'); // ambil nama file tanpa .html
+    const link = baseURL + file;
+    const pubDate = new Date().toUTCString();
+
     items += `
-<item>
-  <title>${p.nama}</title>
-  <link>https://legoshjeans.github.io/produk.html?id=${p.id}</link>
-  <description>${p.deskripsi}</description>
-  <guid>${p.id}</guid>
-</item>`;
-  });
+    <item>
+      <title>${title}</title>
+      <link>${link}</link>
+      <description>Deskripsi singkat ${title}</description>
+      <pubDate>${pubDate}</pubDate>
+      <guid>${link}</guid>
+    </item>`;
+  }
 });
 
+// Buat RSS XML
 const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
-<channel>
-<title>Legosh Jeans Produk Terbaru</title>
-<link>https://legoshjeans.github.io</link>
-<description>Katalog produk terbaru</description>
-${items}
-</channel>
+  <channel>
+    <title>Toko Saya</title>
+    <link>${baseURL}</link>
+    <description>Daftar produk terbaru</description>
+    <language>id-ID</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    ${items}
+  </channel>
 </rss>`;
 
-fs.writeFileSync('rss.xml', rss);
-console.log('RSS berhasil dibuat!');
-
+// Simpan sebagai rss.xml
+fs.writeFileSync('rss.xml', rss.trim());
+console.log('RSS feed berhasil dibuat! ✅');
