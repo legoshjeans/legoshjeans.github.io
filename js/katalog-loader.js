@@ -99,8 +99,13 @@ function renderProducts() {
           ${renderStars(rating)}
           <span>${rating}</span>
         </div>
-
-        <a href="${p.link}" target="_blank" rel="noopener">Lihat Detail</a>
+<a 
+  href="/produk.html?id=${p.id}" 
+  class="detail-link" 
+  data-link="${p.link}"
+>
+  Lihat Detail
+</a>
       </div>
     `);
   });
@@ -191,3 +196,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const kategoriEl = document.getElementById('filterKategori');
   if (kategoriEl) kategoriEl.addEventListener('change', filterProducts);
 });
+// ===============================
+// REDIRECT SAAT KLIK DETAIL
+// ===============================
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('.detail-link');
+  if (!link) return;
+
+  e.preventDefault(); // hentikan buka URL id
+  const tujuan = link.getAttribute('data-link');
+  window.location.href = tujuan; // lompat ke Shopee
+});
+
+
+
+
+
