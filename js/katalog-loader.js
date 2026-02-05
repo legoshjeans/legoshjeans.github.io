@@ -112,7 +112,7 @@ function renderProducts() {
           <span>${rating}</span>
         </div>
 
-        <a href="produk.html?id=${slug}" class="detail-link">
+        <a href="produk.html?slug=${slug}" class="detail-link">
           Lihat Detail
         </a>
       </div>
