@@ -1,15 +1,27 @@
-
 // ===============================
 // KONFIGURASI
 // ===============================
+const BASE_PATH = window.location.origin;
+
 const jsonFiles = [
-  'data/katalog1.json',
-  'data/katalog2.json',
-  'data/katalog3.json'
+  '/data/katalog1.json',
+  '/data/katalog2.json',
+  '/data/katalog3.json'
 ];
+
 const batchSize = 14;
 let allProducts = [];
 let visibleCount = batchSize;
+
+// ===============================
+// ACAK URUTAN PRODUK (Fisher-Yates)
+// ===============================
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
 // ===============================
 // LOAD JSON
@@ -17,13 +29,17 @@ let visibleCount = batchSize;
 async function loadJSONFiles() {
   for (const file of jsonFiles) {
     try {
-      const res = await fetch(file);
+      const res = await fetch(BASE_PATH + file);
       const data = await res.json();
       allProducts = allProducts.concat(data);
     } catch (err) {
       console.error('Gagal load:', file, err);
     }
   }
+
+  // ACAK SEKALI SETELAH SEMUA PRODUK TERKUMPUL
+  shuffleArray(allProducts);
+
   renderProducts();
 }
 
