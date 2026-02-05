@@ -24,6 +24,17 @@ function shuffleArray(array) {
 }
 
 // ===============================
+// GENERATE SLUG SEO-FRIENDLY
+// ===============================
+function generateSlug(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g,'-')  // spasi & karakter khusus → "-"
+    .replace(/^-+|-+$/g,'');      // hapus - di awal/akhir
+}
+
+// ===============================
 // LOAD JSON
 // ===============================
 async function loadJSONFiles() {
@@ -84,6 +95,7 @@ function renderProducts() {
 
   showProducts.forEach(p => {
     const rating = p.rating || (Math.random() * (5 - 4) + 4).toFixed(1);
+    const slug = generateSlug(p.nama);
 
     container.insertAdjacentHTML('beforeend', `
       <div class="product-card">
@@ -100,11 +112,9 @@ function renderProducts() {
           <span>${rating}</span>
         </div>
 
-        const slug = generateSlug(p.nama); // buat fungsi generateSlug kalau belum ada
-<a href="produk.html?slug=${slug}" class="detail-link">
-  Lihat Detail → /produk/${slug}
-</a>
-
+        <a href="produk.html?slug=${slug}" class="detail-link">
+          Lihat Detail → /produk/${slug}
+        </a>
       </div>
     `);
   });
