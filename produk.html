@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title id="page-title">Produk Legosh</title>
+  <meta name="description" content="" id="meta-desc">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="" id="og-title">
+  <meta property="og:description" content="" id="og-desc">
+  <meta property="og:image" content="" id="og-image">
+  <meta property="og:url" content="" id="og-url">
+  <meta property="og:type" content="product">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json" id="json-ld"></script>
+</head>
+<body>
+  <h1 id="product-name">Produk Legosh</h1>
+  <img id="product-img" src="" alt="Produk" width="300">
+  <p id="product-desc"></p>
+  <p>Harga: <span id="product-price"></span></p>
+  <p>Jika tidak diarahkan otomatis, <a id="manual-link" href="#">klik di sini</a></p>
+
+  <script>
+    // ===============================
+    // KONFIGURASI
+    // ===============================
+    const jsonFiles = [
+      '/data/katalog1.json',
+      '/data/katalog2.json',
+      '/data/katalog3.json'
+    ];
+
+    function generateSlug(name) {
+      return name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+    }
+
+    async function loadProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+      if(!slug) return;
+
+      let allProducts = [];
+      for(const file of jsonFiles){
+        try{
+          const res = await fetch(file);
+          const data = await res.json();
+          allProducts = allProducts.concat(data);
+        }catch(e){
+          console.error('Gagal load:', file, e);
+        }
+      }
+
+      const product = allProducts.find(p => generateSlug(p.nama) === slug);
+      if(!product) return;
+
+      // Update konten
+      document.getElementById('product-name').textContent = product.nama;
+      document.getElementById('product-img').src = product.gambar;
+      document.getElementById('product-img').alt = product.nama;
+      document.getElementById('product-desc').textContent = product.deskripsi || '';
+      document.getElementById('product-price').textContent = product.harga || '0';
+      document.getElementById('manual-link').href = product.link;
+
+      // Update title & meta
+      document.getElementById('page-title').textContent = product.nama + ' - Legosh';
+      document.getElementById('meta-desc').setAttribute('content', product.deskripsi || '');
+      document.getElementById('og-title').setAttribute('content', product.nama + ' - Legosh');
+      document.getElementById('og-desc').setAttribute('content', product.deskripsi || '');
+      document.getElementById('og-image').setAttribute('content', product.gambar);
+      document.getElementById('og-url').setAttribute('content', window.location.href);
+
+      // JSON-LD
+      const schema = {
+        "@context":"https://schema.org/",
+        "@type":"Product",
+        "name":product.nama,
+        "image":product.gambar,
+        "description":product.deskripsi || '',
+        "brand":{"@type":"Brand","name":"Legosh"},
+        "offers":{
+          "@type":"Offer",
+          "priceCurrency":"IDR",
+          "price":product.harga || "0",
+          "availability":"https://schema.org/InStock",
+          "url":product.link
+        }
+      };
+      document.getElementById('json-ld').textContent = JSON.stringify(schema,null,2);
+
+      // Redirect otomatis ke Shopee
+      setTimeout(() => {
+        window.location.href = product.link;
+      }, 2000);
+    }
+
+    loadProduct();
+  </script>
+</body>
+</html>
 
